@@ -3,20 +3,23 @@
 import numpy as np
 import pandas as pd
 class KNN:
-  def __init__(self, k):
+  def __init__(self, k, target_column):
     """
-    Pass in one argument - k, the number of nearest neighbors to consider.
+    Pass in one argument, which is k, the number of nearest neighbors to consider.
 
     Args:
       self.k - the number of nearest neighbors to consider
-      self.training_set - the training set we will inevitably pass to this 
-      algorithm. This variable is instantiated as an empty Pandas Dataframe
+
+      self.training_set - the training set we will inevitably pass to this algorithm. This variable is instantiated as an empty Pandas Dataframe
+
+      self.target_column - the name of the column that we are trying to predict values for
     """
     self.k = k
     self.training_set = pd.DataFrame()
     self.label_set = []
+    self.target_column = target_column
   
-  def train(self, csvfile: str, target_column: str):
+  def train(self, csvfile: str):
     """
     Sets self.training_set = csv_in_panda_form, where csv_in_panda_form is a 
     pandas dataframe that contains the information from the linked csv file.
@@ -26,7 +29,7 @@ class KNN:
     """
     csv_in_panda_form = pd.read_csv(csvfile)
     self.training_set = csv_in_panda_form
-    self.label_set = self.training_set[target_column].unique()
+    self.label_set = self.training_set[self.target_column].unique()
   
   def get_training_set(self):
     """
@@ -40,7 +43,7 @@ class KNN:
     """
     training_set_test_instance_difference = []
     training_set_rows = []
-    feature_columns = self.training_set.columns.drop("Outcome")
+    feature_columns = self.training_set.columns.drop(self.target_column)
     for index, row in self.training_set.iterrows():
       training_set_test_instance_difference.append(float((x[feature_columns] - row[feature_columns]).abs().sum()))
       training_set_rows.append(row)
